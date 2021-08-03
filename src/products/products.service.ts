@@ -29,33 +29,41 @@ export class ProductsService {
     }));
   }
 
-  getProduct(id: string) {
-    const product = this.findProduct(id)[0];
-    return { ...product };
+  async getProduct(id: string) {
+    const product = await this.findProduct(id);
+    return product;
   }
 
-  updateProduct(id: string, title: string, description: string, price: number) {
-    const [product, index] = this.findProduct(id);
-    const updateProduct = { ...product };
+  async updateProduct(
+    id: string,
+    title: string,
+    description: string,
+    price: number,
+  ) {
+    const updateProduct = await this.findProduct(id);
 
     if (title) updateProduct.title = title;
     if (description) updateProduct.description = description;
     if (price) updateProduct.price = price;
 
-    this.products[index] = updateProduct;
+    const res = await updateProduct.save();
+    return res;
   }
 
-  deleteProduct(id: string) {
-    this.products = [...this.products.filter((prod) => prod.id !== id)];
+  async deleteProduct(id: string) {
+    const result = await this.productModel.deleteOne({ _id: id }).exec();
+    if (result.n === 0) {
+      throw new NotFoundException('No data found');
+    }
   }
 
   //UTILS
-  private findProduct(id: string): [Product, number] {
-    const productIndex = this.products.findIndex((prod) => prod.id === id);
-    const product = this.products[productIndex];
+  private async findProduct(id: string): Promise<Product> {
+    const product = await this.productModel.findById(id);
     if (!product) {
       throw new NotFoundException('Not found');
     }
-    return [product, productIndex];
+    console.log({ product });
+    return product;
   }
 }
