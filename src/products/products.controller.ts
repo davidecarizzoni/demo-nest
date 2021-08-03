@@ -14,18 +14,18 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  addProduct(
+  async addProduct(
     //@Body() completeBody: {title: string, description: string, price: number} --> this is another approch
     @Body('title') title: string,
     @Body('description') description: string,
     @Body('price') price: number,
   ) {
-    const generatedId = this.productsService.insertProduct(
+    const res = await this.productsService.insertProduct(
       title,
       description,
       price,
     );
-    return { id: generatedId }; //this is a valide json to return from the post request
+    return res; //this is a valide json to return from the post request
   }
 
   @Get()
