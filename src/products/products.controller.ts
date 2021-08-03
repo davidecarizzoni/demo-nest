@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { ProductsService } from './products.service';
 
 @Controller('products')
@@ -11,12 +11,17 @@ export class ProductsController {
     @Body('title') title: string,
     @Body('description') description: string,
     @Body('price') price: number,
-  ): any {
+  ) {
     const generatedId = this.productsService.insertProduct(
       title,
       description,
       price,
     );
     return { id: generatedId }; //this is a valide json to return from the post request
+  }
+
+  @Get()
+  getAllProducts() {
+    return this.productsService.getProducts();
   }
 }
