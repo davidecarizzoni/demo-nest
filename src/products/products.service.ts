@@ -20,8 +20,13 @@ export class ProductsService {
   }
 
   async getProducts() {
-    const result = await this.productModel.find().exec();
-    return [...result]; //new array using spread operator
+    const products = await this.productModel.find().exec();
+    return products.map((p) => ({
+      id: p._id,
+      title: p.title,
+      description: p.description,
+      price: p.price,
+    }));
   }
 
   getProduct(id: string) {
