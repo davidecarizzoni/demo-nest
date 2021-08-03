@@ -19,9 +19,9 @@ export class ProductsService {
     return res;
   }
 
-  getProducts() {
-    // return this.products -> NOT GOOD. Return a pointer of the array
-    return [...this.products]; //new array using spread operator
+  async getProducts() {
+    const result = await this.productModel.find().exec();
+    return [...result]; //new array using spread operator
   }
 
   getProduct(id: string) {
